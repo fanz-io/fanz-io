@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Projekte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-50 min-h-screen p-8 font-sans">
+    <div class="container mx-auto max-w-7xl">
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-zinc-900 mb-4 tracking-tight">Meine Projekte</h1>
+            <p class="text-zinc-500 text-lg">Eine Übersicht meiner aktuellen Arbeiten</p>
+        </header>
+
+        <!-- Project Grid -->
+        <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Projekte werden dynamisch hier eingefügt -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-black">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <h2 id="modalTitle" class="text-2xl font-semibold text-zinc-900 mb-4"></h2>
+            <div id="modalContent" class="text-zinc-600 space-y-4">
+                <!-- Modal-Inhalt wird dynamisch hier eingefügt -->
+            </div>
+            <div id="modalMeta" class="mt-6 pt-6 border-t border-zinc-100">
+                <div id="modalTechnologies" class="flex flex-wrap gap-2 mb-4">
+                    <!-- Technologie-Tags werden dynamisch hier eingefügt -->
+                </div>
+                <div id="modalStatus" class="text-sm text-zinc-500">
+                    <!-- Status wird dynamisch hier eingefügt -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Projektdaten direkt eingebettet
+        const projects = [
+            {
+                id: 1,
+                title: "Projekt 1",
+                shortDescription: "Ein innovatives Web-Entwicklungsprojekt",
+                detailedDescription: "Dieses Projekt nutzt modernste Webtechnologien, um eine hochperformante und benutzerfreundliche Anwendung zu erstellen. Zu den Hauptfunktionen gehören:\n\n- Responsive Design\n- Progressive Web App Funktionalität\n- Offline-Unterstützung\n- Real-time Updates",
+                url: "https://projekt1.de",
+                technologies: ["React", "Node.js", "MongoDB"],
+                status: "In Entwicklung"
+            },
+            {
+                id: 2,
+                title: "Projekt 2",
+                shortDescription: "Mobile-First E-Commerce Lösung",
+                detailedDescription: "Eine moderne E-Commerce-Plattform, die von Grund auf für mobile Geräte optimiert wurde. Besondere Merkmale sind:\n\n- Schnelle Ladezeiten\n- Intuitive Benutzerführung\n- Sicheres Zahlungssystem\n- Umfangreiche Produktverwaltung",
+                url: "https://projekt2.de",
+                technologies: ["Vue.js", "Laravel", "MySQL"],
+                status: "Live"
+            },
+            {
+                id: 3,
+                title: "Projekt 3",
+                shortDescription: "KI-gestützte Datenanalyse-Platform",
+                detailedDescription: "Eine fortschrittliche Plattform zur Analyse großer Datenmengen mit Hilfe von künstlicher Intelligenz. Hauptmerkmale:\n\n- Automatische Datenerkennung\n- Predictive Analytics\n- Visualisierungstools\n- Export-Funktionen",
+                url: "https://projekt3.de",
+                technologies: ["Python", "TensorFlow", "AWS"],
+                status: "Beta"
+            },
+            {
+                id: 4,
+                title: "Projekt 4",
+                shortDescription: "IoT Smart Home System",
+                detailedDescription: "Ein vernetztes System zur Steuerung und Überwachung von Smart Home Geräten. Features:\n\n- Zentrale Steuerung\n- Energiemanagement\n- Automatisierte Abläufe\n- Sicherheitsüberwachung",
+                url: "https://projekt4.de",
+                technologies: ["Flutter", "Firebase", "ESP32"],
+                status: "Konzeptphase"
+            }
+        ];
+
+        // Render die Projektliste
+        function renderProjects() {
+            const grid = document.getElementById('projectGrid');
+            grid.innerHTML = projects.map(project => `
+                <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-zinc-100">
+                    <div class="p-8 flex flex-col h-full">
+                        <div class="flex-grow">
+                            <h2 class="text-xl font-semibold text-zinc-900 mb-3">${project.title}</h2>
+                            <p class="text-zinc-600">${project.shortDescription}</p>
+                        </div>
+                        <div class="flex justify-end items-center gap-6 mt-6 pt-6 border-t border-zinc-100">
+                            <button onclick="openModal(${project.id})" 
+                                    class="text-zinc-600 hover:text-black transition-colors duration-300">
+                                Details
+                            </button>
+                            <a href="${project.url}" target="_blank" rel="noopener noreferrer" 
+                               class="bg-zinc-900 text-white px-6 py-2 rounded-lg hover:bg-black transition-colors duration-300 text-sm font-medium">
+                                Öffnen
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Öffne das Modal mit Projektdetails
+        function openModal(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+
+            document.getElementById('modalTitle').textContent = project.title;
+            
+            // Setze den Hauptinhalt
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = project.detailedDescription.split('\n').map(line => 
+                line.trim().startsWith('-') ? 
+                `<li class="ml-4">• ${line.substring(1)}</li>` : 
+                `<p>${line}</p>`
+            ).join('');
+
+            // Setze die Technologie-Tags
+            const techContainer = document.getElementById('modalTechnologies');
+            techContainer.innerHTML = project.technologies.map(tech => 
+                `<span class="bg-zinc-100 text-zinc-700 px-3 py-1 rounded-full text-sm">${tech}</span>`
+            ).join('');
+
+            // Setze den Status
+            document.getElementById('modalStatus').textContent = `Status: ${project.status}`;
+
+            // Zeige das Modal
+            const modal = document.getElementById('modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        // Schließe Modal beim Klick außerhalb
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) {
+                closeModal();
+            }
+        });
+
+        // Schließe Modal mit Escape-Taste
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // Render die Projekte beim Start
+        renderProjects();
+    </script>
+</body>
+</html>

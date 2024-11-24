@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fanzCOSMOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['IBM Plex Sans', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-zinc-50 min-h-screen font-sans">
+    <header id="mainHeader" class="w-full bg-zinc-300 sticky top-0 z-50 transition-all duration-300 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col items-center justify-center py-12 transition-all duration-300" id="headerContent">
+                <div class="flex items-center gap-3 mb-2">
+                    <img src="https://www.fanz.io/wp-content/themes/mysite/images/Fanz-logo.svg" alt="fanz logo" class="h-8 transition-all duration-300" id="headerLogo">
+                    <h1 class="text-4xl font-bold text-zinc-900 transition-all duration-300" id="pageTitle">COSMOS</h1>
+                </div>
+                <p class="text-lg text-zinc-600 transition-all duration-300" id="pageSubtitle">All available projects of fanz - live and in development</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto py-16 px-4">
+        <!-- Swimlanes Container -->
+        <div id="swimlanesContainer" class="space-y-16">
+            <!-- Swimlanes werden hier dynamisch eingefügt -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center">
+        <div class="bg-white p-8 max-w-lg w-full mx-4 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-black">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <h2 id="modalTitle" class="text-2xl font-semibold mb-4"></h2>
+            <div id="modalContent" class="space-y-4">
+                <!-- Modal-Inhalt wird dynamisch hier eingefügt -->
+            </div>
+            <div id="modalMeta" class="mt-6 pt-6 border-t space-y-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-zinc-500 w-24">Tags:</span>
+                    <div id="modalTechnologies" class="flex flex-wrap gap-2">
+                        <!-- Technologie-Tags werden dynamisch hier eingefügt -->
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-zinc-500 w-24">Status:</span>
+                    <div id="modalStatus">
+                        <!-- Status wird dynamisch hier eingefügt -->
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-zinc-500 w-24">Available on:</span>
+                    <div id="modalEnvironments" class="flex flex-wrap gap-2">
+                        <!-- Environments werden dynamisch hier eingefügt -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Konfigurierbare Werte
+        const CONFIG = {
+            pageTitle: 'fanzCOSMOS',
+            pageSubtitle: 'All available projects of fanz - live and in development',
+            modalCloseText: 'Close',
+            buttonOpenText: 'Open',
+            buttonDetailsText: 'Details',
+            statusLabel: 'Status',
+            colors: {
+                primary: 'zinc-900',
+                secondary: 'zinc-600',
+                background: 'zinc-50',
+                card: 'white',
+                border: 'zinc-100',
+                tag: 'zinc-100',
+                tagText: 'zinc-700',
+                status: {
+                    Live: {
+                        bg: 'emerald-100',
+                        text: 'emerald-700',
+                        dot: 'emerald-400'
+                    },
+                    Beta: {
+                        bg: 'orange-100',
+                        text: 'orange-700',
+                        dot: 'orange-400'
+                    },
+                    'development': {
+                        bg: 'blue-100',
+                        text: 'blue-700',
+                        dot: 'blue-400'
+                    }
+                },
+                environment: {
+                    Production: {
+                        bg: 'zinc-100',
+                        text: 'zinc-700',
+                        dot: 'zinc-400'
+                    },
+                    Staging: {
+                        bg: 'zinc-100',
+                        text: 'zinc-700',
+                        dot: 'zinc-400'
+                    }
+                }
+            },
+            spacing: {
+                containerPadding: '24',
+                cardPadding: '8',
+                gap: '8'
+            }
+        };
+
+        // Kategorien/Swimlanes Definition
+        const categories = {
+            payment: {
+                title: "Payment",
+                description: "eCommerce Payment solution",
+                tag: "payment"
+            },
+            voucher: {
+                title: "Voucher",
+                description: "Voucher and discount system",
+                tag: "voucher"
+            },
+            documentation: {
+                title: "API",
+                description: "API and documentation",
+                tag: "documentation"
+            }
+        };
+
+        // Zentrale Projektliste
+        const projects = [
+            {
+                id: 1,
+                order: 1,
+                title: "eCommerce Payment",
+                shortDescription: "Standalone payment solution for eCommerce platforms.",
+                detailedDescription: "This is a complete solution for eCommerce platforms. It includes a payment gateway and payment processing based on Adyen.",
+                links: [
+                    { label: "Production-API", url: "https://api-pay.fanz.io" },
+                    { label: "Staging-API", url: "https://staging-api-pay.fanz.io" }
+                ],
+                technologies: ["Node.js", "Stripe API", "Express"],
+                status: "Live",
+                environments: ["Production", "Staging"],
+                tags: ["payment"]
+            },
+            {
+                id: 2,
+                order: 3,
+                title: "Voucher Generator",
+                shortDescription: "System zur Generierung und Verwaltung von Gutscheincodes",
+                links: [
+                    { label: "Staging", url: "https://buy-voucher-dev.fanz.io/" }
+                ],
+                technologies: ["Python", "FastAPI", "PostgreSQL"],
+                status: "Beta",
+                environments: ["Staging"],
+                tags: ["voucher"]
+            },
+            {
+                id: 3,
+                order: 1,
+                title: "Voucher Documentation",
+                shortDescription: "Documentation for implementing the Voucher System into your project.",
+                links: [
+                    { label: "Documentation", url: "https://fanz-io.github.io/voucher-documentation/" }
+                ],
+                technologies: ["Python", "FastAPI", "PostgreSQL"],
+                status: "Beta",
+                environments: ["Staging"],
+                tags: ["voucher", "documentation"]
+            },
+            {
+                id: 5,
+                order: 2,
+                title: "eCommerce Management",
+                shortDescription: "Management interface for merchants",
+                detailedDescription: "This interface lets you view and manage your payments.",
+                links: [
+                    { label: "Production", url: "https://app.fanz.io" }
+                ],
+                technologies: [],
+                status: "Live",
+                environments: ["Production"],
+                tags: ["payment"]
+            },
+            {
+                id: 6,
+                order: 3,
+                title: "Voucher Redeem",
+                shortDescription: "System zur Generierung und Verwaltung von Gutscheincodes",
+                links: [
+                    { label: "Staging", url: "https://buy-voucher-dev.fanz.io/demo-checkout" }
+                ],
+                technologies: ["Python", "FastAPI", "PostgreSQL"],
+                status: "Beta",
+                environments: ["Staging"],
+                tags: ["voucher"]
+            },
+            {
+                id: 7,
+                order: 2,
+                title: "Payment Documentation",
+                shortDescription: "How to use the Payment API",
+                links: [
+                    { label: "Documentation", url: "https://developer.fanz.io" }
+                ],
+                technologies: ["Python", "FastAPI", "PostgreSQL"],
+                status: "Live",
+                environments: ["Staging"],
+                tags: ["documentation", "payment"]
+            },
+            {
+                id: 8,
+                order: 2,
+                title: "Payment-Flow Demo",
+                shortDescription: "How to use the Payment API",
+                links: [
+                    { label: "Demo", url: "https://demo.fanz.io" }
+                ],
+                technologies: ["Python", "FastAPI", "PostgreSQL"],
+                status: "Live",
+                environments: ["Staging"],
+                tags: ["payment"]
+            }
+        ];
+
+        // Render die Swimlanes mit Projekten
+        function renderSwimlanes() {
+            const container = document.getElementById('swimlanesContainer');
+            container.innerHTML = Object.entries(categories).map(([key, category]) => {
+                // Filtere Projekte nach dem Category-Tag
+                const categoryProjects = projects
+                    .filter(project => project.tags.includes(category.tag))
+                    .sort((a, b) => (a.order || 999) - (b.order || 999));
+
+                return `
+                    <div class="swimlane">
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold mb-2">${category.title}</h2>
+                            <p class="text-zinc-600">${category.description}</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            ${categoryProjects.map(project => `
+                                <div class="bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-zinc-100">
+                                    <div class="p-8 flex flex-col h-full">
+                                        <div class="flex-grow">
+                                            <div class="flex justify-between items-start mb-3">
+                                                <h3 class="text-xl font-semibold text-zinc-900">${project.title}</h3>
+                                                <span class="inline-flex items-center gap-1.5 px-2 py-1 text-sm bg-${CONFIG.colors.status[project.status].bg} text-${CONFIG.colors.status[project.status].text}">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-${CONFIG.colors.status[project.status].dot}"></span>
+                                                    ${project.status}
+                                                </span>
+                                            </div>
+                                            <p class="text-zinc-600 mb-3">${project.shortDescription}</p>
+                                            <div class="flex items-center flex-wrap gap-2">
+                                                <span class="text-sm text-zinc-500">Available on:</span>
+                                                ${project.environments.map(env => `
+                                                    <span class="inline-flex items-center gap-1.5 px-2 py-1 text-sm bg-${CONFIG.colors.environment[env].bg} text-${CONFIG.colors.environment[env].text}">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-${CONFIG.colors.environment[env].dot}"></span>
+                                                        ${env}
+                                                    </span>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-end items-center gap-6 mt-6 pt-6 border-t border-zinc-100">
+                                            ${project.detailedDescription ? `
+                                                <button onclick="openModal(${project.id})" 
+                                                        class="text-zinc-600 hover:text-black transition-colors duration-300">
+                                                    Details
+                                                </button>
+                                            ` : ''}
+                                            ${project.links.length === 1 ? `
+                                                <a href="${project.links[0].url}" target="_blank" rel="noopener noreferrer" 
+                                                   class="bg-zinc-900 text-white px-6 py-2 hover:bg-black transition-colors duration-300 text-sm font-medium">
+                                                    Open
+                                                </a>
+                                            ` : `
+                                                <div class="relative group">
+                                                    <button class="bg-zinc-900 text-white px-6 py-2 hover:bg-black transition-colors duration-300 text-sm font-medium inline-flex items-center gap-2">
+                                                        Open
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                        </svg>
+                                                    </button>
+                                                    <div class="absolute right-0 mt-2 w-48 bg-white border border-zinc-100 shadow-lg rounded-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                                                        ${project.links.map(link => `
+                                                            <a href="${link.url}" target="_blank" rel="noopener noreferrer" 
+                                                               class="block px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50">
+                                                                ${link.label}
+                                                            </a>
+                                                        `).join('')}
+                                                    </div>
+                                                </div>
+                                            `}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Modal Funktionen
+        function openModal(projectId) {
+            const project = projects.find(p => p.id === projectId);
+
+            if (!project) return;
+
+            document.getElementById('modalTitle').textContent = project.title;
+            
+            // Setze den Inhalt
+            document.getElementById('modalContent').innerHTML = project.detailedDescription
+                .split('\n')
+                .map(line => `<p>${line}</p>`)
+                .join('');
+
+            // Setze die Technologie-Tags
+            const techContainer = document.getElementById('modalTechnologies');
+            techContainer.innerHTML = project.technologies.map(tech => 
+                `<span class="bg-zinc-100 text-zinc-700 px-3 py-1 text-sm">${tech}</span>`
+            ).join('');
+
+            // Setze den Status
+            const statusContainer = document.getElementById('modalStatus');
+            statusContainer.innerHTML = `
+                <span class="inline-flex items-center gap-1.5 px-2 py-1 text-sm bg-${CONFIG.colors.status[project.status].bg} text-${CONFIG.colors.status[project.status].text}">
+                    <span class="w-1.5 h-1.5 rounded-full bg-${CONFIG.colors.status[project.status].dot}"></span>
+                    ${project.status}
+                </span>
+            `;
+
+            // Setze die Environments
+            const envContainer = document.getElementById('modalEnvironments');
+            envContainer.innerHTML = project.environments.map(env => `
+                <span class="inline-flex items-center gap-1.5 px-2 py-1 text-sm bg-${CONFIG.colors.environment[env].bg} text-${CONFIG.colors.environment[env].text}">
+                    <span class="w-1.5 h-1.5 rounded-full bg-${CONFIG.colors.environment[env].dot}"></span>
+                    ${env}
+                </span>
+            `).join('');
+
+            // Zeige das Modal
+            const modal = document.getElementById('modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Event Listener für Modal
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !document.getElementById('modal').classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+
+        // Header Scroll Effect
+        let lastScroll = 0;
+        const header = document.getElementById('mainHeader');
+        const headerContent = document.getElementById('headerContent');
+        const title = document.getElementById('pageTitle');
+        const subtitle = document.getElementById('pageSubtitle');
+        const headerLogo = document.getElementById('headerLogo');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 50) {
+                headerContent.classList.remove('py-12');
+                headerContent.classList.add('py-6');
+                title.classList.remove('text-4xl');
+                title.classList.add('text-2xl');
+                subtitle.classList.remove('text-lg');
+                subtitle.classList.add('text-sm');
+                headerLogo.classList.remove('h-8');
+                headerLogo.classList.add('h-6');
+            } else {
+                headerContent.classList.add('py-12');
+                headerContent.classList.remove('py-6');
+                title.classList.add('text-4xl');
+                title.classList.remove('text-2xl');
+                subtitle.classList.add('text-lg');
+                subtitle.classList.remove('text-sm');
+                headerLogo.classList.add('h-8');
+                headerLogo.classList.remove('h-6');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // Warte bis das DOM geladen ist
+        document.addEventListener('DOMContentLoaded', function() {
+            // Render initial swimlanes
+            renderSwimlanes();
+        });
+    </script>
+</body>
+</html>

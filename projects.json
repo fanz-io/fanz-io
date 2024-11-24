@@ -1,0 +1,40 @@
+{
+    "projects": [
+        {
+            "id": 1,
+            "title": "Projekt 1",
+            "shortDescription": "Ein innovatives Web-Entwicklungsprojekt",
+            "detailedDescription": "Dieses Projekt nutzt modernste Webtechnologien, um eine hochperformante und benutzerfreundliche Anwendung zu erstellen. Zu den Hauptfunktionen gehören:\n\n- Responsive Design\n- Progressive Web App Funktionalität\n- Offline-Unterstützung\n- Real-time Updates",
+            "url": "https://projekt1.de",
+            "technologies": ["React", "Node.js", "MongoDB"],
+            "status": "In Entwicklung"
+        },
+        {
+            "id": 2,
+            "title": "Projekt 2",
+            "shortDescription": "Mobile-First E-Commerce Lösung",
+            "detailedDescription": "Eine moderne E-Commerce-Plattform, die von Grund auf für mobile Geräte optimiert wurde. Besondere Merkmale sind:\n\n- Schnelle Ladezeiten\n- Intuitive Benutzerführung\n- Sicheres Zahlungssystem\n- Umfangreiche Produktverwaltung",
+            "url": "https://projekt2.de",
+            "technologies": ["Vue.js", "Laravel", "MySQL"],
+            "status": "Live"
+        },
+        {
+            "id": 3,
+            "title": "Projekt 3",
+            "shortDescription": "KI-gestützte Datenanalyse-Platform",
+            "detailedDescription": "Eine fortschrittliche Plattform zur Analyse großer Datenmengen mit Hilfe von künstlicher Intelligenz. Hauptmerkmale:\n\n- Automatische Datenerkennung\n- Predictive Analytics\n- Visualisierungstools\n- Export-Funktionen",
+            "url": "https://projekt3.de",
+            "technologies": ["Python", "TensorFlow", "AWS"],
+            "status": "Beta"
+        },
+        {
+            "id": 4,
+            "title": "Projekt 4",
+            "shortDescription": "IoT Smart Home System",
+            "detailedDescription": "Ein vernetztes System zur Steuerung und Überwachung von Smart Home Geräten. Features:\n\n- Zentrale Steuerung\n- Energiemanagement\n- Automatisierte Abläufe\n- Sicherheitsüberwachung",
+            "url": "https://projekt4.de",
+            "technologies": ["Flutter", "Firebase", "ESP32"],
+            "status": "Konzeptphase"
+        }
+    ]
+}
